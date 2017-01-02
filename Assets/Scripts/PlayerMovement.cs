@@ -1,96 +1,83 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 public class PlayerMovement : MonoBehaviour {
 	private float maxSpeed = 30.0f;
-
-	// Once inputs have been set to keys and labelled in Unity, we can get their level of activity from -1.0 to 0 (for -ve input)
-	// 	and 0 to 1.0 (for +ve input) where magnitudes depend on degree of pressing that button
-
-	// We do not use that number directly, we usually multiply by a speed that we set and here we will make it public
-	public float thrust;
-
-	// Anyway to get the input degrees, we refer to them by their names used in Unity and put them this a vector
-	private Vector3 inputVector;
-
-	private Rigidbody rb;
-
-	// We create the public variable to hold the sparks GO. We instantiate if later when a collision occurs
-	public GameObject sparks;
-
-	// We create the public variable to hold the sparks GO. We instantiate if later when a collision occurs
-	public GameObject fall;
-
-	// The position to which we need to respawn. initialize it in Start()
-	private Vector3 respawnLocation;
-
-	// Flag saying if we accept inputs or not
-	private bool acceptInputs;
-
+	public float thrust; // Multiplier for the value from keypress
+	private Vector3 inputVector; // Will hold the vector user wants to move in
+	private Rigidbody rb; // Forces will act upon the rigidbody to make the player move
+	public GameObject sparks; // For when the player hits a bomb
+	public GameObject fallEffects;
+	private Vector3 respawnLocation; // The position to which we need to respawn. initialize it in Start()
+	private bool acceptInputs; // Flag saying if we accept inputs or not
+	private bool dieEffects; // Flag allowing effects to show or not
 
 	// Use this for initialization
 	void Start () {
+		dieEffects = true;
 		respawnLocation = transform.position;
 		acceptInputs = true;
+		PlayerPrefs.SetInt ("current", SceneManager.GetActiveScene ().buildIndex);
+
+		// If first time we reach this level, raise the maxLevelReached bar 
+		// Maybe use this bar later to know if have access to a level or not etc
+		if (SceneManager.GetActiveScene ().buildIndex > PlayerPrefs.GetInt ("max")) {
+			PlayerPrefs.SetInt ("max", SceneManager.GetActiveScene ().buildIndex);
+		}
 	}
 		
-	// Update is called once per frame
 	void FixedUpdate () {
-
-		// This is how we put them inside this vector
+		// Place user's desired direction in this Vectror3
 		inputVector = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-
-		// Because our player has a rigid body component, we can treat it as a rigid body to which forces can be applied
-		// 	and that body may have a velocity etc. So to move it, use addForce
-		// 	(I can just refer to the rigid body like this:)
 		rb = GetComponent<Rigidbody> ();
-
 		if (rb.velocity.magnitude < maxSpeed && acceptInputs) {
 			rb.AddRelativeForce(inputVector * thrust);
 		}
-
 		if (rb.transform.position.y < 0) {
-			StartCoroutine(Fall());
+			Die("Fall");
 		}
 	}
 
+	// Deals with the case when this GO collides
 	void OnTriggerEnter(Collider other){
-		// Deals with the case when this GO collides (Runs once only, even of this GO stays stuck to the other GO)
-		// 	If needed the function to keep running as long as the bodies touch, would use OnCollisionStay)
 		if (other.transform.tag == "Goal") {
-			MySceneManager.PromoteLevel ();
+			// Level Completed
+			TimeAndScore TimeAndScore = gameObject.GetComponent<TimeAndScore> ();
+			Dictionary<string, bool> tokensCollected = TimeAndScore.tokensCollected;
+			float leftTime = TimeAndScore.leftTime;
+			float initialTime = TimeAndScore.initialTime;
+			float score = Statics.CalculateScore (tokensCollected, leftTime, initialTime);
+			print (score);
+			// Load next level
+			SceneManager.LoadScene (PlayerPrefs.GetInt ("current") + 1);
 		}
-
 		// We tagged enemies so that we know that it is enemies that we are colliding with
-		// Can grab the tag of the otherGO from its transform or its collider etc, here will grab from its transform
-		if (other.transform.tag == "Enemy") {
-			// We make sparks appear where player was and player must respawn to starting position
-			// By now, variable sparks contains the sparks GO that we dragged to this GO
-			StartCoroutine(Die());
-
-			// Remember to attach a Destroy script to the sparks, otherwise they stay in memory (seen in hierarchy window)
+		else if (other.transform.tag == "Enemy") {
+			Die ("Bomb");
 		}
 	}
 
-	// Defined by myself for modularizing collision and respawning
-	IEnumerator Die(){
-		Instantiate(sparks, transform.position, Quaternion.identity);
-		GetComponent<MeshRenderer> ().enabled = false;
-		yield return new WaitForSeconds (0.4f);
-		GetComponent<MeshRenderer> ().enabled = true;
-		transform.position = respawnLocation;
+	// Defined for modularizing death and respawning (effects plus reappearance of player)
+	void Die(string whyDead){
+		if (dieEffects) {
+			// Suspend Movements and Disappear
+			gameObject.GetComponent<MeshRenderer> ().enabled = false;
+			gameObject.GetComponent<BoxCollider> ().enabled = false;
+			// Make effects appear
+			if (whyDead == "Fall") {
+				Instantiate (fallEffects, transform.position, Quaternion.identity);
+				dieEffects = false;
+			} else if (whyDead == "Bomb") {
+				Instantiate (sparks, transform.position, Quaternion.identity);
+				dieEffects = false;
+			}
+		}
+		StartCoroutine(Statics.ReloadLevel());
 	}
 
-	// Defined by myself for modularizing falling and respawning
-	IEnumerator Fall(){
-		//Instantiate(fall, transform.position, Quaternion.identity);
-		GetComponent<MeshRenderer> ().enabled = false;
-		yield return new WaitForSeconds (0.4f);
-		GetComponent<MeshRenderer> ().enabled = true;
-		transform.position = respawnLocation;
-	}
-
-	// We will check if the player loses contact with the floor by tagging 'floor' and checking whenever we lose its collider
+	// We will check if the player loses contact with the floor
 	// 	Then we will suspend inputs, until we respawned fully
 	void OnCollisionEnter (Collision other) 
 	{
@@ -98,7 +85,6 @@ public class PlayerMovement : MonoBehaviour {
 			acceptInputs = true;
 		}
 	}
-
 	void OnCollisionExit (Collision other) 
 	{
 		if (other.transform.tag == "Floor") {

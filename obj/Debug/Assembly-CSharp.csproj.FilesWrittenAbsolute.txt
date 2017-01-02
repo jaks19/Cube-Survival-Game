@@ -1,0 +1,17 @@
+/Users/Adarsh_Jeewajee/Desktop/Unity3D/FirstGame/Temp/bin/Debug/Assembly-CSharp.dll.mdb
+/Users/Adarsh_Jeewajee/Desktop/Unity3D/FirstGame/Temp/bin/Debug/Assembly-CSharp.dll
+/Users/Adarsh_Jeewajee/Desktop/Unity3D/FirstGame/obj/Debug/Assembly-CSharp.dll
+/Users/Adarsh_Jeewajee/Desktop/Unity3D/FirstGame/obj/Debug/Assembly-CSharp.dll.mdb
+/Users/Adarsh_Jeewajee/Desktop/Unity3D/FirstGame/Temp/bin/Debug/UnityEngine.dll
+/Users/Adarsh_Jeewajee/Desktop/Unity3D/FirstGame/Temp/bin/Debug/UnityEditor.dll
+/Users/Adarsh_Jeewajee/Desktop/Unity3D/FirstGame/Temp/bin/Debug/UnityEngine.Networking.dll
+/Users/Adarsh_Jeewajee/Desktop/Unity3D/FirstGame/Temp/bin/Debug/UnityEngine.UI.dll
+/Users/Adarsh_Jeewajee/Desktop/Unity3D/FirstGame/Temp/bin/Debug/Mono.Cecil.dll
+/Users/Adarsh_Jeewajee/Desktop/Unity3D/FirstGame/Temp/bin/Debug/Unity.SerializationLogic.dll
+/Users/Adarsh_Jeewajee/Desktop/Unity3D/FirstGame/Temp/bin/Debug/Unity.DataContract.dll
+/Users/Adarsh_Jeewajee/Desktop/Unity3D/FirstGame/Temp/bin/Debug/ICSharpCode.NRefactory.dll
+/Users/Adarsh_Jeewajee/Desktop/Unity3D/FirstGame/Temp/bin/Debug/Unity.UNetWeaver.dll
+/Users/Adarsh_Jeewajee/Desktop/Unity3D/FirstGame/Temp/bin/Debug/Unity.UNetWeaver.dll.mdb
+/Users/Adarsh_Jeewajee/Desktop/Unity3D/FirstGame/Temp/bin/Debug/Unity.CecilTools.dll
+/Users/Adarsh_Jeewajee/Desktop/Unity3D/FirstGame/Temp/bin/Debug/Mono.Cecil.Pdb.dll
+/Users/Adarsh_Jeewajee/Desktop/Unity3D/FirstGame/Temp/bin/Debug/Mono.Cecil.Mdb.dll
