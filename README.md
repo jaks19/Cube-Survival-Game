@@ -9,3 +9,6 @@ The game is a classic Pacman-Like game but where there are varieties of obstacle
 
 ## To run:
 Open the project folder in Unity3D and byou can run the raw version or build onto ANY platform from Android to iOS to PC to XBox. The game should be built while selecting Scene 1. Scene 2 is incomplete but as explained above, all the infrastructure is there (traps, coins, characters, maze blocks) to build more levels and doing that can actually be fun. (I used this platform to go and teach my little cousin about game development on Unity and he is now helping me build more levels)
+
+## File Hierarchy:
+All the C# scripts, graphic assets and prefabs are in the assets folder. The game needs to be run from the highest level where the whole project is available with all the files due to weird Unity3D project settings files. 
